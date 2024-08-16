@@ -42,6 +42,15 @@ public class Main {
             }
 
             seasons.forEach(System.out::println);
+
+            // Lambda (Consumer)
+            seasons.forEach(s -> {
+                System.out.println("\n-----------------");
+                System.out.println("Temporada " + s.number());
+                System.out.println("-----------------");
+                s.episodes().forEach(e -> System.out.println(e.title()));
+            });
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
