@@ -3,9 +3,12 @@ package br.com.alura.screenmatch.main;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+import br.com.alura.screenmatch.model.EpisodeModel;
 import br.com.alura.screenmatch.model.SeasonModel;
 import br.com.alura.screenmatch.model.SeriesModel;
 import br.com.alura.screenmatch.service.ConsumeApiService;
@@ -19,8 +22,8 @@ public class Main {
 
     private DataConverterService converter = new DataConverterService();
 
-    private final String ADDRESS = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "6585022c";
+    private static final String ADDRESS = "https://www.omdbapi.com/?t=";
+    private static final String API_KEY = "6585022c";
 
     public void showMenu() {
         System.out.println("Digite o nome da série para buscar:");
@@ -44,15 +47,28 @@ public class Main {
             seasons.forEach(System.out::println);
 
             // Lambda (Consumer)
-            seasons.forEach(s -> {
-                System.out.println("\n-----------------");
-                System.out.println("Temporada " + s.number());
-                System.out.println("-----------------");
-                s.episodes().forEach(e -> System.out.println(e.title()));
-            });
+            seasons.forEach(this::showSeasonEpisodes);
+
+            List<EpisodeModel> episodes = seasons.stream()
+                    .flatMap(s -> s.episodes().stream())
+                    .collect(Collectors.toList());
+
+            System.out.println("\nTop 5 episódios de " + seriesData.title());
+            episodes.stream()
+                    .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
+                    .sorted(Comparator.comparing(EpisodeModel::rating).reversed())
+                    .limit(5)
+                    .forEach(System.out::println);
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showSeasonEpisodes(SeasonModel season) {
+        System.out.println("\n-----------------");
+        System.out.println("Temporada " + season.number());
+        System.out.println("-----------------");
+        season.episodes().forEach(e -> System.out.println(e.title()));
     }
 }
