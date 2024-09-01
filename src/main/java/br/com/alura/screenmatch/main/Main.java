@@ -2,6 +2,8 @@ package br.com.alura.screenmatch.main;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +36,7 @@ public class Main {
             String json = consumer.getData(ADDRESS + seriesName + "&apikey=" + API_KEY);
 
             SeriesModel seriesData = converter.getData(json, SeriesModel.class);
-            System.out.println(seriesData);
+            // System.out.println(seriesData);
 
             List<SeasonModel> seasons = new ArrayList<>();
 
@@ -66,6 +68,22 @@ public class Main {
                     .collect(Collectors.toList());
 
             episodes.forEach(System.out::println);
+
+            System.out.println("A partir de que ano você deseja ver os episódios?");
+            int year = scanner.nextInt();
+            scanner.nextLine();
+
+            LocalDate searchDate = LocalDate.of(year, 1, 1);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            episodes.stream()
+                    .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(searchDate))
+                    .forEach(e -> System.out
+                            .println("Temporada " + e.getSeason() + " - " + e.getTitle() + " - "
+                                    + e.getReleaseDate().format(formatter)
+
+                            ));
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
