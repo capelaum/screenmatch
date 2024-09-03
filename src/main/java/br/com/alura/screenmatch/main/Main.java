@@ -47,7 +47,7 @@ public class Main {
                 seasons.add(seasonData);
             }
 
-            seasons.forEach(System.out::println);
+            // seasons.forEach(System.out::println);
 
             // Lambda (Consumer)
             seasons.forEach(this::showSeasonEpisodes);
@@ -56,12 +56,21 @@ public class Main {
                     .flatMap(s -> s.episodes().stream())
                     .collect(Collectors.toList());
 
-            System.out.println("\nTop 5 episódios de " + seriesData.title());
+            System.out.println("\nTop 10 episódios de " + seriesData.title() + "\n");
+
             episodesData.stream()
                     .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
+                    .peek(e -> System.out.println("Primeiro filtro (N/A): " + e))
                     .sorted(Comparator.comparing(EpisodeModel::rating).reversed())
-                    .limit(5)
+                    .peek(e -> System.out.println("Ordenação: " + e))
+                    .limit(10)
+                    .peek(e -> System.out.println("Limite: " + e))
+                    .map(e -> e.title().toUpperCase())
+                    .peek(e -> System.out.println("Maiuscula: " + e))
                     .forEach(System.out::println);
+
+            System.out.println("--------------------------");
+            System.out.println("\nTodos episódios de " + seriesData.title() + "\n");
 
             List<Episode> episodes = seasons.stream()
                     .flatMap(s -> s.episodes().stream().map(e -> new Episode(s.number(), e)))
@@ -69,9 +78,11 @@ public class Main {
 
             episodes.forEach(System.out::println);
 
+            System.out.println("--------------------------");
             System.out.println("A partir de que ano você deseja ver os episódios?");
             int year = scanner.nextInt();
             scanner.nextLine();
+            System.out.println("--------------------------");
 
             LocalDate searchDate = LocalDate.of(year, 1, 1);
 
@@ -81,9 +92,7 @@ public class Main {
                     .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(searchDate))
                     .forEach(e -> System.out
                             .println("Temporada " + e.getSeason() + " - " + e.getTitle() + " - "
-                                    + e.getReleaseDate().format(formatter)
-
-                            ));
+                                    + e.getReleaseDate().format(formatter)));
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
