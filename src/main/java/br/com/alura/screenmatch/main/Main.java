@@ -2,16 +2,13 @@ package br.com.alura.screenmatch.main;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import br.com.alura.screenmatch.model.Episode;
-import br.com.alura.screenmatch.model.EpisodeModel;
 import br.com.alura.screenmatch.model.SeasonModel;
 import br.com.alura.screenmatch.model.SeriesModel;
 import br.com.alura.screenmatch.service.ConsumeApiService;
@@ -50,14 +47,14 @@ public class Main {
             // seasons.forEach(System.out::println);
 
             // Lambda (Consumer)
-            seasons.forEach(this::showSeasonEpisodes);
+            // seasons.forEach(this::showSeasonEpisodes);
 
-            List<EpisodeModel> episodesData = seasons.stream()
+            /* List<EpisodeModel> episodesData = seasons.stream()
                     .flatMap(s -> s.episodes().stream())
                     .collect(Collectors.toList());
-
+            
             System.out.println("\nTop 10 episódios de " + seriesData.title() + "\n");
-
+            
             episodesData.stream()
                     .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
                     .peek(e -> System.out.println("Primeiro filtro (N/A): " + e))
@@ -67,7 +64,7 @@ public class Main {
                     .peek(e -> System.out.println("Limite: " + e))
                     .map(e -> e.title().toUpperCase())
                     .peek(e -> System.out.println("Maiuscula: " + e))
-                    .forEach(System.out::println);
+                    .forEach(System.out::println); */
 
             System.out.println("--------------------------");
             System.out.println("\nTodos episódios de " + seriesData.title() + "\n");
@@ -79,20 +76,35 @@ public class Main {
             episodes.forEach(System.out::println);
 
             System.out.println("--------------------------");
+            System.out.println("Digite o nome do episódio para buscar:");
+            var titlePart = scanner.nextLine();
+            Optional<Episode> episode = episodes.stream()
+                    .filter(e -> e.getTitle().toLowerCase().contains(titlePart.toLowerCase()))
+                    .findFirst();
+
+            if (episode.isPresent()) {
+                System.out.println(episode.get().getTitle());
+            }
+
+            if (episode.isEmpty()) {
+                System.out.println("Não foi encontrado nenhum episódio com esse nome");
+            }
+
+            /* System.out.println("--------------------------");
             System.out.println("A partir de que ano você deseja ver os episódios?");
             int year = scanner.nextInt();
             scanner.nextLine();
             System.out.println("--------------------------");
-
+            
             LocalDate searchDate = LocalDate.of(year, 1, 1);
-
+            
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+            
             episodes.stream()
                     .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(searchDate))
                     .forEach(e -> System.out
                             .println("Temporada " + e.getSeason() + " - " + e.getTitle() + " - "
-                                    + e.getReleaseDate().format(formatter)));
+                                    + e.getReleaseDate().format(formatter))); */
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
