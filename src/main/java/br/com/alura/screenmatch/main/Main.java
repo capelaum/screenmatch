@@ -57,15 +57,21 @@ public class Main {
                     .flatMap(s -> s.episodes().stream().map(e -> new Episode(s.number(), e)))
                     .collect(Collectors.toList());
 
-            Map<Integer, Double> ratingsPerSeason = episodes.stream()
-                    .filter(e -> e.getRating() > 0.0)
-                    .collect(Collectors.groupingBy(Episode::getSeason, Collectors.averagingDouble(Episode::getRating)));
-
-            System.out.println(ratingsPerSeason);
+            showRatingsPerSeason(episodes);
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showRatingsPerSeason(List<Episode> episodes) {
+        Map<Integer, Double> ratingsPerSeason = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.groupingBy(Episode::getSeason, Collectors.averagingDouble(Episode::getRating)));
+
+        System.out.println("--------------------------");
+        System.out.println("Avaliação média por temporada:");
+        System.out.println(ratingsPerSeason);
     }
 
     private void showAllEpisodesOfSeries(List<Episode> episodes, SeriesModel seriesData) {
