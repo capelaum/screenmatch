@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,9 +60,23 @@ public class Main {
 
             showRatingsPerSeason(episodes);
 
+            showEpisodesRatingsStatistics(episodes);
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showEpisodesRatingsStatistics(List<Episode> episodes) {
+        DoubleSummaryStatistics stats = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.summarizingDouble(Episode::getRating));
+
+        System.out.println("--------------------------");
+        System.out.println("Número de episódios avaliados: " + stats.getCount());
+        System.out.println("Média: " + stats.getAverage());
+        System.out.println("Mínimo: " + stats.getMin());
+        System.out.println("Máximo: " + stats.getMax());
     }
 
     private void showRatingsPerSeason(List<Episode> episodes) {
