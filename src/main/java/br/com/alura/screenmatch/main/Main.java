@@ -58,7 +58,7 @@ public class Main {
                     .flatMap(s -> s.episodes().stream().map(e -> new Episode(s.number(), e)))
                     .collect(Collectors.toList());
 
-            showRatingsPerSeason(episodes);
+            showAverageRatingPerSeason(episodes);
 
             showEpisodesRatingsStatistics(episodes);
 
@@ -79,14 +79,14 @@ public class Main {
         System.out.println("Máximo: " + stats.getMax());
     }
 
-    private void showRatingsPerSeason(List<Episode> episodes) {
-        Map<Integer, Double> ratingsPerSeason = episodes.stream()
+    private void showAverageRatingPerSeason(List<Episode> episodes) {
+        Map<Integer, Double> averageRatingPerSeason = episodes.stream()
                 .filter(e -> e.getRating() > 0.0)
                 .collect(Collectors.groupingBy(Episode::getSeason, Collectors.averagingDouble(Episode::getRating)));
 
         System.out.println("--------------------------");
         System.out.println("Avaliação média por temporada:");
-        System.out.println(ratingsPerSeason);
+        System.out.println(averageRatingPerSeason);
     }
 
     private void showAllEpisodesOfSeries(List<Episode> episodes, SeriesModel seriesData) {
